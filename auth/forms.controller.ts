@@ -14,6 +14,7 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { FormsService } from './forms.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { BasicInfoDto, AddressDetailsDto, ProfessionalDetailsDto } from './dto/form-stages.dto';
 
 @Controller('forms')
 @UseGuards(JwtAuthGuard)
@@ -22,19 +23,19 @@ export class FormsController {
 
   @Post('stage-1')
   @UseInterceptors(FileInterceptor('dummy')) // Enforces multipart/form-data
-  createStage1(@Req() req, @Body() data: any) {
+  createStage1(@Req() req, @Body() data: BasicInfoDto) {
     return this.formsService.createStage1(req.user.sub, data);
   }
 
   @Post('stage-2/:id')
   @UseInterceptors(FileInterceptor('dummy'))
-  updateStage2(@Param('id') id: string, @Body() data: any) {
+  updateStage2(@Param('id') id: string, @Body() data: AddressDetailsDto) {
     return this.formsService.updateStage(id, 2, 'addressInfo', data);
   }
 
   @Post('stage-3/:id')
   @UseInterceptors(FileInterceptor('dummy'))
-  updateStage3(@Param('id') id: string, @Body() data: any) {
+  updateStage3(@Param('id') id: string, @Body() data: ProfessionalDetailsDto) {
     return this.formsService.updateStage(id, 3, 'professionalInfo', data);
   }
 

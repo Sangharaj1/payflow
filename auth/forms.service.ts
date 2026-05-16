@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Form } from './form.entity';
+import { BasicInfoDto } from './form-stages.dto';
 
 export type FormField = 'basicInfo' | 'addressInfo' | 'professionalInfo' | 'documentInfo' | 'reviewInfo';
 
@@ -12,7 +13,7 @@ export class FormsService {
     private formRepository: Repository<Form>,
   ) {}
 
-  async createStage1(userId: string, data: any) {
+  async createStage1(userId: string, data: BasicInfoDto) {
     const form = this.formRepository.create({
       userId,
       basicInfo: data,

@@ -65,6 +65,8 @@ export class AuthService {
       email: user.email,
     };
 
+    const isProduction = process.env.NODE_ENV === 'production';
+
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_SECRET,
       expiresIn: '1m',
@@ -84,14 +86,14 @@ export class AuthService {
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       sameSite: 'strict',
-      secure: false,
+      secure: isProduction,
       maxAge: 60000,
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'strict',
-      secure: false,
+      secure: isProduction,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -145,18 +147,20 @@ export class AuthService {
       user.refreshToken = hashedRefresh;
       await this.userRepository.save(user);
 
+      const isProduction = process.env.NODE_ENV === 'production';
+
       // Update cookies
       res.cookie('accessToken', newAccessToken, {
         httpOnly: true,
         sameSite: 'strict',
-        secure: false, // Set to true in production
+        secure: isProduction,
         maxAge: 60000,
       });
 
       res.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
         sameSite: 'strict',
-        secure: false, // Set to true in production
+        secure: isProduction,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
